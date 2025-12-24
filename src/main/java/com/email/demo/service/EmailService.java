@@ -14,8 +14,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    // ==== THIS METHOD MUST EXIST ====
-    public String sendEmailWithPdf(String to, String subject, String body, String fileName) {
+    public String sendEmailWithPdf(String to, String subject, String body, String filePath) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -24,27 +23,20 @@ public class EmailService {
             helper.setSubject(subject);
             helper.setText(body);
 
-            // Folder containing PDFs
-            String folderPath = "D:\\Email_Send_Resume\\";
-
-            // Create File object
-            File file = new File(folderPath + fileName);
-
-            // File existence check
-            if (!file.exists()) {
-                return "PDF not found: " + fileName;
+            // Only attach if filePath is provided
+            if (filePath != null && !filePath.isEmpty()) {
+                File file = new File(filePath);
+                if (!file.exists() || !file.isFile()) {
+                    return "PDF not found: " + filePath;
+                }
+                helper.addAttachment(file.getName(), file);
             }
 
-            // Attach the PDF
-            helper.addAttachment(fileName, file);
-
-            // Send email
             mailSender.send(message);
-
             return "Email Sent Successfully!";
         } catch (Exception e) {
             e.printStackTrace();
-            return "Failed to send email";
+            return "Failed to send email: " + e.getMessage();
         }
     }
 }
