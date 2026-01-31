@@ -8,7 +8,7 @@ public class EmailSendingApi041225Application {
 
     public static void main(String[] args) {
         SpringApplication.run(EmailSendingApi041225Application.class, args);
-        System.out.println("STARTED-----------------------------------");
+        System.out.println("Starting Email Sending Api...");
     }
 
 }
